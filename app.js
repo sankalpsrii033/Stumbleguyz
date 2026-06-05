@@ -1765,3 +1765,227 @@ function renderEventHistory() {
     </div>
   `).join("");
 }
+/* ADMIN */
+
+function setupAdminActions() {
+  const exportBackupBtn = $("exportBackupBtn");
+  const restoreBackupInput = $("restoreBackupInput");
+  const changePasswordBtn = $("changePasswordBtn");
+  const undoLastBtn = $("undoLastBtn");
+  const resetDataBtn = $("resetDataBtn");
+
+  if (exportBackupBtn) exportBackupBtn.addEventListener("click", exportBackup);
+  if (restoreBackupInput) restoreBackupInput.addEventListener("change", restoreBackup);
+  if (changePasswordBtn) changePasswordBtn.addEventListener("click", changePassword);
+  if (undoLastBtn) undoLastBtn.addEventListener("click", undoLastAction);
+  if (resetDataBtn) resetDataBtn.addEventListener("click", resetAllData);
+}
+
+function exportBackup() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {
+    type: "application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = `stumble-league-backup-${Date.now()}.json`;
+  link.click();
+
+  URL.revokeObjectURL(url);
+  toast("Backup exported");
+}
+function restoreBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+
+      if (!Array.isArray(parsed.players)) {
+        toast("Invalid backup file");
+        return;
+      }
+
+      pushUndo("Restore backup");
+      state = {
+        ...createDefaultState(),
+        ...parsed,
+        players: parsed.players.map(normalizePlayer),
+        undoStack: state.undoStack
+      };
+
+      renderAll();
+      toast("Backup restored");
+    } catch (error) {
+      toast("Could not restore backup");
+    }
+  };
+
+  reader.readAsText(file);
+}
+function changePassword() {
+  const oldPassword = $("oldPassword").value;
+  const newPassword = $("newPassword").value;
+
+  if (oldPassword !== state.password) {
+    toast("Old password is wrong");
+    return;
+  }
+
+  if (!newPassword || newPassword.length < 4) {
+    toast("New password must be at least 4 characters");
+    return;
+  }
+
+  pushUndo("Change password");
+  state.password = newPassword;
+
+  $("oldPassword").value = "";
+  $("newPassword").value = "";
+
+  renderAll();
+  toast("Password changed");
+}
+
+function undoLastAction() {
+  if (!state.undoStack.length) {
+    toast("Nothing to undo");
+    return;
+  }
+
+  const last = state.undoStack.pop();
+
+  if (!last || !last.snapshot) {
+    toast("Undo failed");
+    return;
+  }
+
+  const remainingUndo = state.undoStack;
+  state = last.snapshot;
+  state.undoStack = remainingUndo;
+
+  renderAll();
+  toast(`Undone: ${last.label}`);
+      }
+function resetAllData() {
+  const confirmed = confirm("Reset all saved data? This cannot be undone unless you exported a backup.");
+
+  if (!confirmed) return;
+
+  pushUndo("Reset all data");
+  state = createDefaultState();
+  saveData();
+  renderAll();
+  toast("All data reset");
+}
+
+/* CHARTS */
+
+function renderCharts() {
+  const players = getRankedPlayers();
+
+  drawBarChart("pointsChart", players.map(player => player.name), players.map(player => player.stats.points));
+  drawBarChart("winsChart", players.map(player => player.name), players.map(player => player.stats.wins));
+  drawBarChart("mvpChart", players.map(player => player.name), players.map(player => player.stats.mvps));
+
+  const topPlayer = players[0];
+  drawRankChart("rankChart", topPlayer);
+}
+
+function drawBarChart(canvasId, labels, values) {
+  const canvas = $(canvasId);
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  const width = canvas.clientWidth || 400;
+  const height = 220;
+  const ratio = window.devicePixelRatio || 1;
+
+  canvas.width = width * ratio;
+  canvas.height = height * ratio;
+  ctx.scale(ratio, ratio);
+
+  ctx.clearRect(0, 0, width, height);
+  const max = Math.max(...values, 1);
+  const padding = 35;
+  const chartWidth = width - padding * 2;
+  const chartHeight = height - padding * 2;
+  const barWidth = labels.length ? chartWidth / labels.length - 10 : 20;
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+  ctx.font = "12px Arial";
+
+  labels.forEach((label, index) => {
+    const value = values[index];
+    const barHeight = (value / max) * chartHeight;
+    const x = padding + index * (barWidth + 10);
+    const y = height - padding - barHeight;
+
+    const gradient = ctx.createLinearGradient(0, y, 0, height - padding);
+    gradient.addColorStop(0, "#ffd166");
+    gradient.addColorStop(1, "#7c3cff");
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(x, y, barWidth, barHeight);
+
+    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+    ctx.fillText(String(value), x, y - 6);
+
+    ctx.save();
+    ctx.translate(x + 4, height - 12);
+    ctx.rotate(-0.4);
+    ctx.fillText(label.slice(0, 8), 0, 0);
+    ctx.restore();
+  });
+}
+function drawRankChart(canvasId, player) {
+  const canvas = $(canvasId);
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  const width = canvas.clientWidth || 400;
+  const height = 220;
+  const ratio = window.devicePixelRatio || 1;
+
+  canvas.width = width * ratio;
+  canvas.height = height * ratio;
+  ctx.scale(ratio, ratio);
+
+  ctx.clearRect(0, 0, width, height);
+
+  if (!player || !player.rankHistory.length) {
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.font = "14px Arial";
+    ctx.fillText("Rank history will appear after matches", 25, 110);
+    return;
+  }
+
+  const history = player.rankHistory.slice(-12);
+  const padding = 35;
+  const chartWidth = width - padding * 2;
+  const chartHeight = height - padding * 2;
+  const maxRank = Math.max(...history.map(item => item.rank), 5);
+
+  ctx.strokeStyle = "#ffd166";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+
+  history.forEach((item, index) => {
+    const x = padding + (index / Math.max(history.length - 1, 1)) * chartWidth;
+    const y = padding + ((item.rank - 1) / Math.max(maxRank - 1, 1)) * chartHeight;
+
+    if (index === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+  ctx.font = "13px Arial";
+  ctx.fillText(`${player.name} Rank History`, padding, 20);
+}
