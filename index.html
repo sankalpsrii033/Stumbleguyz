@@ -1,43 +1,569 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stumble League Manager Pro</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Stumble League Manager - Private Stumble Guys tournament, cup, ranking, achievement, and player history manager." />
+  <meta name="theme-color" content="#080b14" />
+
+  <title>Stumble League Manager</title>
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Font Awesome Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-d0vVxjFZ2E08fXkV6t7rW6zF6K8QGJ+vK6E4RZ6eZB8D0+P3LZ+F4YJx1SgR7ZyZtG3O8KZl6kE0J6Y0R2Q=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-<div id="app">
-    <aside>
-        <h2>🏆 SLM PRO</h2>
-        <ul>
-            <li>Dashboard</li>
-            <li>Players</li>
-            <li>Rankings</li>
-            <li>Tournaments</li>
-            <li>League Cup</li>
-            <li>Elimination Cup</li>
-            <li>Event Tournaments</li>
-            <li>Achievements</li>
-            <li>Hall Of Fame</li>
-            <li>History</li>
-            <li>Settings</li>
-        </ul>
+  <!-- =========================
+       ADMIN LOGIN SCREEN
+  ========================== -->
+  <section id="loginScreen" class="login-screen">
+    <div class="login-bg-orb orb-one"></div>
+    <div class="login-bg-orb orb-two"></div>
+
+    <div class="login-card glass-card">
+      <div class="brand-stack">
+        <div class="brand-logo">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <div>
+          <h1>Stumble League Manager</h1>
+          <p>Private esports tournament control center</p>
+        </div>
+      </div>
+
+      <form id="loginForm" class="login-form">
+        <label for="adminPassword">Admin Password</label>
+        <div class="input-with-icon">
+          <i class="fa-solid fa-lock"></i>
+          <input
+            type="password"
+            id="adminPassword"
+            placeholder="Enter admin password"
+            autocomplete="current-password"
+            required
+          />
+          <button type="button" id="togglePasswordBtn" class="icon-btn" aria-label="Show or hide password">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+
+        <button type="submit" class="primary-btn full-btn">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          Login
+        </button>
+
+        <p class="hint-text">
+          Default password: <strong>admin123</strong>. Change it from Admin Panel.
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <!-- =========================
+       APP SHELL
+  ========================== -->
+  <main id="appShell" class="app-shell hidden">
+    <!-- Sidebar / Bottom Navigation -->
+    <aside class="sidebar glass-panel">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">
+          <i class="fa-solid fa-crown"></i>
+        </div>
+        <div>
+          <h2>Stumble League</h2>
+          <span>Manager Pro</span>
+        </div>
+      </div>
+
+      <nav class="side-nav" aria-label="Primary navigation">
+        <button class="nav-link active" data-page="dashboardPage">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-link" data-page="playersPage">
+          <i class="fa-solid fa-users"></i>
+          <span>Players</span>
+        </button>
+        <button class="nav-link" data-page="rankingsPage">
+          <i class="fa-solid fa-ranking-star"></i>
+          <span>Rankings</span>
+        </button>
+        <button class="nav-link" data-page="tournamentsPage">
+          <i class="fa-solid fa-trophy"></i>
+          <span>Tournaments</span>
+        </button>
+        <button class="nav-link" data-page="cupsPage">
+          <i class="fa-solid fa-medal"></i>
+          <span>Cups</span>
+        </button>
+        <button class="nav-link" data-page="eventsPage">
+          <i class="fa-solid fa-star"></i>
+          <span>Events</span>
+        </button>
+        <button class="nav-link" data-page="achievementsPage">
+          <i class="fa-solid fa-award"></i>
+          <span>Achievements</span>
+        </button>
+        <button class="nav-link" data-page="recordsPage">
+          <i class="fa-solid fa-scroll"></i>
+          <span>Records</span>
+        </button>
+        <button class="nav-link" data-page="historyPage">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>History</span>
+        </button>
+        <button class="nav-link" data-page="adminPage">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Admin</span>
+        </button>
+      </nav>
     </aside>
 
-    <main>
-        <section id="dashboard"><h1>Dashboard</h1></section>
-        <section id="players"><h1>Players</h1></section>
-        <section id="rankings"><h1>Rankings</h1></section>
-        <section id="tournaments"><h1>Tournaments</h1></section>
-        <section id="leagueCup"><h1>League Cup</h1></section>
-        <section id="eliminationCup"><h1>Elimination Cup</h1></section>
-        <section id="events"><h1>Event Tournaments</h1></section>
-        <section id="achievements"><h1>Achievements</h1></section>
-        <section id="hallOfFame"><h1>Hall Of Fame</h1></section>
-        <section id="history"><h1>History</h1></section>
-        <section id="settings"><h1>Settings</h1></section>
-    </main>
-</div>
-</body>
-</html>
+    <!-- Main Content -->
+    <section class="main-content">
+      <!-- Topbar -->
+      <header class="topbar glass-panel">
+        <div>
+          <p class="eyebrow">Private League Control Center</p>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="autosave-pill">
+            <span class="pulse-dot"></span>
+            <span id="saveStatus">Auto Saved</span>
+          </div>
+
+          <button id="quickBackupBtn" class="ghost-btn">
+            <i class="fa-solid fa-download"></i>
+            Backup
+          </button>
+
+          <button id="logoutBtn" class="danger-btn">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- =========================
+           DASHBOARD PAGE
+      ========================== -->
+      <section id="dashboardPage" class="page active-page">
+        <div class="hero-panel glass-card">
+          <div class="hero-content">
+            <p class="eyebrow">Season Overview</p>
+            <h2>Welcome to the Stumble League Arena</h2>
+            <p>
+              Track matches, tournaments, cups, MVPs, achievements, records, rankings,
+              and every champion in one permanent private dashboard.
+            </p>
+          </div>
+
+          <div class="hero-trophy">
+            <i class="fa-solid fa-trophy"></i>
+            <span>PRO</span>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card glass-card">
+            <div class="stat-icon blue-glow"><i class="fa-solid fa-users"></i></div>
+            <div>
+              <span>Total Players</span>
+              <strong id="totalPlayersStat">0</strong>
+            </div>
+          </article>
+
+          <article class="stat-card glass-card">
+            <div class="stat-icon gold-glow"><i class="fa-solid fa-gamepad"></i></div>
+            <div>
+              <span>Total Matches</span>
+              <strong id="totalMatchesStat">0</strong>
+            </div>
+          </article>
+
+          <article class="stat-card glass-card">
+            <div class="stat-icon purple-glow"><i class="fa-solid fa-trophy"></i></div>
+            <div>
+              <span>Tournaments</span>
+              <strong id="totalTournamentsStat">0</strong>
+            </div>
+          </article>
+
+          <article class="stat-card glass-card">
+            <div class="stat-icon red-glow"><i class="fa-solid fa-medal"></i></div>
+            <div>
+              <span>Cups</span>
+              <strong id="totalCupsStat">0</strong>
+            </div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="glass-card feature-card champion-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Current Rank #1</p>
+                <h3>Top Ranked Player</h3>
+              </div>
+              <i class="fa-solid fa-ranking-star"></i>
+            </div>
+
+            <div id="topRankedPlayerCard" class="featured-player empty-state">
+              No ranked player yet.
+            </div>
+          </article>
+
+          <article class="glass-card feature-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Recent Winners</p>
+                <h3>Recent Champions</h3>
+              </div>
+              <i class="fa-solid fa-crown"></i>
+            </div>
+
+            <div id="recentChampionsList" class="compact-list">
+              <p class="empty-state">No champions recorded yet.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="leaderboard-grid">
+          <article class="glass-card">
+            <div class="section-heading">
+              <h3>MVP Leaderboard</h3>
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <div id="mvpLeaderboard" class="leaderboard-list"></div>
+          </article>
+
+          <article class="glass-card">
+            <div class="section-heading">
+              <h3>Win Rate Leaderboard</h3>
+              <i class="fa-solid fa-percent"></i>
+            </div>
+            <div id="winRateLeaderboard" class="leaderboard-list"></div>
+          </article>
+
+          <article class="glass-card">
+            <div class="section-heading">
+              <h3>Trophy Leaderboard</h3>
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+            <div id="trophyLeaderboard" class="leaderboard-list"></div>
+          </article>
+        </div>
+
+        <div class="charts-grid">
+          <article class="glass-card chart-card">
+            <div class="section-heading">
+              <h3>Points Graph</h3>
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <canvas id="pointsChart"></canvas>
+          </article>
+
+          <article class="glass-card chart-card">
+            <div class="section-heading">
+              <h3>Wins Graph</h3>
+              <i class="fa-solid fa-chart-simple"></i>
+            </div>
+            <canvas id="winsChart"></canvas>
+          </article>
+
+          <article class="glass-card chart-card">
+            <div class="section-heading">
+              <h3>MVP Graph</h3>
+              <i class="fa-solid fa-chart-column"></i>
+            </div>
+            <canvas id="mvpChart"></canvas>
+          </article>
+
+          <article class="glass-card chart-card">
+            <div class="section-heading">
+              <h3>Rank History</h3>
+              <i class="fa-solid fa-timeline"></i>
+            </div>
+            <canvas id="rankHistoryChart"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <!-- =========================
+           PLAYERS PAGE
+      ========================== -->
+      <section id="playersPage" class="page">
+        <div class="page-toolbar glass-card">
+          <div>
+            <p class="eyebrow">Player Database</p>
+            <h2>Players</h2>
+          </div>
+
+          <button id="addPlayerBtn" class="primary-btn">
+            <i class="fa-solid fa-user-plus"></i>
+            Add Player
+          </button>
+        </div>
+
+        <div id="playersGrid" class="players-grid"></div>
+      </section>
+
+      <!-- =========================
+           PLAYER PROFILE PAGE
+      ========================== -->
+      <section id="playerProfilePage" class="page">
+        <button id="backToPlayersBtn" class="ghost-btn back-btn">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back to Players
+        </button>
+
+        <div class="profile-layout">
+          <article class="profile-card glass-card">
+            <div class="profile-cover"></div>
+
+            <div class="profile-main">
+              <img id="profileImage" src="assets/images/default-avatar.png" alt="Player profile picture" class="profile-avatar" />
+
+              <div>
+                <p class="eyebrow">Player Profile</p>
+                <h2 id="profileName">Player Name</h2>
+                <p id="profileUsername">@username</p>
+                <span id="profileSpecialTitle" class="title-badge">No Special Title</span>
+              </div>
+            </div>
+
+            <div class="profile-meta">
+              <span><i class="fa-solid fa-id-card"></i> ID: <strong id="profilePlayerId">0</strong></span>
+              <span><i class="fa-solid fa-calendar"></i> Joined: <strong id="profileJoinDate">-</strong></span>
+              <span><i class="fa-solid fa-ranking-star"></i> Rank: <strong id="profileCurrentRank">#-</strong></span>
+              <span><i class="fa-solid fa-arrow-trend-up"></i> Highest: <strong id="profileHighestRank">#-</strong></span>
+            </div>
+          </article>
+
+          <div class="profile-stats-grid">
+            <article class="mini-stat glass-card"><span>Matches</span><strong id="profileMatches">0</strong></article>
+            <article class="mini-stat glass-card"><span>Wins</span><strong id="profileWins">0</strong></article>
+            <article class="mini-stat glass-card"><span>Losses</span><strong id="profileLosses">0</strong></article>
+            <article class="mini-stat glass-card"><span>Win Rate</span><strong id="profileWinRate">0%</strong></article>
+            <article class="mini-stat glass-card"><span>Points</span><strong id="profilePoints">0</strong></article>
+            <article class="mini-stat glass-card"><span>MVPs</span><strong id="profileMVPs">0</strong></article>
+            <article class="mini-stat glass-card"><span>Tournaments</span><strong id="profileTournamentWins">0</strong></article>
+            <article class="mini-stat glass-card"><span>Cups</span><strong id="profileCupWins">0</strong></article>
+            <article class="mini-stat glass-card"><span>Current Streak</span><strong id="profileCurrentStreak">0</strong></article>
+            <article class="mini-stat glass-card"><span>Longest Streak</span><strong id="profileLongestStreak">0</strong></article>
+          </div>
+        </div>
+
+        <div class="profile-detail-grid">
+          <article class="glass-card">
+            <div class="section-heading">
+              <h3>Achievements</h3>
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <div id="profileAchievements" class="achievement-list"></div>
+          </article>
+
+          <article class="glass-card">
+            <div class="section-heading">
+              <h3>Career History</h3>
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div id="profileCareerHistory" class="history-list"></div>
+          </article>
+
+          <article class="glass-card chart-card wide-card">
+            <div class="section-heading">
+              <h3>Personal Rank History</h3>
+              <i class="fa-solid fa-timeline"></i>
+            </div>
+            <canvas id="playerRankHistoryChart"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <!-- =========================
+           RANKINGS PAGE
+      ========================== -->
+      <section id="rankingsPage" class="page">
+        <div class="page-toolbar glass-card">
+          <div>
+            <p class="eyebrow">Ranking Formula</p>
+            <h2>Global Rankings</h2>
+            <p class="subtext">
+              Ranking order: Win Rate %, MVP Count, Matches Played, then Earlier Join Date.
+            </p>
+          </div>
+        </div>
+
+        <div class="glass-card table-card">
+          <div class="table-responsive">
+            <table class="premium-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Win Rate</th>
+                  <th>MVPs</th>
+                  <th>Matches</th>
+                  <th>Wins</th>
+                  <th>Points</th>
+                  <th>Highest Rank</th>
+                </tr>
+              </thead>
+              <tbody id="rankingsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           TOURNAMENTS PAGE
+      ========================== -->
+      <section id="tournamentsPage" class="page">
+        <div class="page-toolbar glass-card">
+          <div>
+            <p class="eyebrow">Best of Series</p>
+            <h2>Tournaments</h2>
+            <p class="subtext">2–5 players, 3–10 matches per series, 3–10 maps per match.</p>
+          </div>
+
+          <button id="createTournamentBtn" class="primary-btn">
+            <i class="fa-solid fa-plus"></i>
+            Create Tournament
+          </button>
+        </div>
+
+        <div id="activeTournamentArea" class="active-area">
+          <article class="glass-card empty-state-card">
+            <i class="fa-solid fa-trophy"></i>
+            <h3>No Active Tournament</h3>
+            <p>Create a tournament to start live scoring.</p>
+          </article>
+        </div>
+
+        <div class="glass-card table-card">
+          <div class="section-heading">
+            <h3>Tournament History</h3>
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+
+          <div class="table-responsive">
+            <table class="premium-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Tournament</th>
+                  <th>Champion</th>
+                  <th>Participants</th>
+                  <th>Series</th>
+                  <th>Total Points</th>
+                </tr>
+              </thead>
+              <tbody id="tournamentHistoryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           CUPS PAGE
+      ========================== -->
+      <section id="cupsPage" class="page">
+        <div class="page-toolbar glass-card">
+          <div>
+            <p class="eyebrow">Cup Competitions</p>
+            <h2>Cups</h2>
+            <p class="subtext">League Cup and Elimination Cup with automatic champion recording.</p>
+          </div>
+
+          <div class="toolbar-actions">
+            <button id="createLeagueCupBtn" class="primary-btn">
+              <i class="fa-solid fa-medal"></i>
+              League Cup
+            </button>
+
+            <button id="createEliminationCupBtn" class="secondary-btn">
+              <i class="fa-solid fa-bolt"></i>
+              Elimination Cup
+            </button>
+          </div>
+        </div>
+
+        <div id="activeCupArea" class="active-area">
+          <article class="glass-card empty-state-card">
+            <i class="fa-solid fa-medal"></i>
+            <h3>No Active Cup</h3>
+            <p>Create a League Cup or Elimination Cup to begin.</p>
+          </article>
+        </div>
+
+        <div class="glass-card table-card">
+          <div class="section-heading">
+            <h3>Cup History</h3>
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+
+          <div class="table-responsive">
+            <table class="premium-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Cup Type</th>
+                  <th>Name</th>
+                  <th>Champion</th>
+                  <th>Participants</th>
+                  <th>Maps</th>
+                </tr>
+              </thead>
+              <tbody id="cupHistoryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           EVENTS PAGE
+      ========================== -->
+      <section id="eventsPage" class="page">
+        <div class="page-toolbar glass-card">
+          <div>
+            <p class="eyebrow">Special Events</p>
+            <h2>Event Tournaments</h2>
+            <p class="subtext">Separate history for Lava Land, SpongeBob, Halloween, and custom events.</p>
+          </div>
+
+          <button id="createEventTournamentBtn" class="primary-btn">
+            <i class="fa-solid fa-calendar-star"></i>
+            Create Event
+          </button>
+        </div>
+
+        <div id="activeEventArea" class="active-area">
+          <article class="glass-card empty-state-card">
+            <i class="fa-solid fa-star"></i>
+            <h3>No Active Event</h3>
+            <p>Create an event tournament to start live scoring.</p>
+          </article>
+        </div>
+
+        <div class="glass-card table-card">
+          <div class="section-heading">
+            <h3>Event History</h3>
+            <i class="fa-solid fa-clock-rotate-left"></i>
+    
