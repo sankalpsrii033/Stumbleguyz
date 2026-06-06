@@ -1,615 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#090b18" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stumble League Manager Pro</title>
 
-  <title>Stumble League Manager</title>
-
-  <link rel="stylesheet" href="style.css" />
-  <script src="app.js" defer></script>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-  <!-- LOGIN SCREEN -->
-  <main id="loginScreen" class="login-screen">
-    <section class="login-card glass-card">
-      <div class="brand-logo">
-        <span class="brand-icon">🏆</span>
-        <div>
-          <h1>Stumble League Manager</h1>
-          <p>Private esports tournament manager</p>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            🏆 Stumble League Manager
         </div>
-      </div>
 
-      <form id="loginForm" class="form-stack">
-        <label>
-          Admin Password
-          <input
-            type="password"
-            id="adminPasswordInput"
-            placeholder="Enter admin password"
-            autocomplete="current-password"
-            required
-          />
-        </label>
+        <nav>
 
-        <button type="submit" class="primary-btn full-btn">
-          Login as Admin
-        </button>
+            <button data-page="dashboard">
+                Dashboard
+            </button>
 
-        <p class="hint-text">
-          Default password will be handled inside <strong>app.js</strong>.
-        </p>
-      </form>
-    </section>
-  </main>
+            <button data-page="players">
+                Players
+            </button>
 
-  <!-- MAIN APP -->
-  <div id="appShell" class="app-shell hidden">
-    <!-- SIDEBAR -->
-    <aside class="sidebar glass-panel">
-      <div class="sidebar-brand">
-        <span class="brand-icon">🏆</span>
-        <div>
-          <h2>Stumble League</h2>
-          <p>Manager Pro</p>
-        </div>
-      </div>
+            <button data-page="leaderboard">
+                Leaderboard
+            </button>
 
-      <nav class="sidebar-nav" aria-label="Main Navigation">
-        <button class="nav-link active" data-page="dashboardPage">📊 Dashboard</button>
-        <button class="nav-link" data-page="playersPage">👥 Players</button>
-        <button class="nav-link" data-page="quickMatchPage">🎮 Quick Match</button>
-        <button class="nav-link" data-page="tournamentsPage">🏆 Tournaments</button>
-        <button class="nav-link" data-page="cupsPage">🥇 Cups</button>
-        <button class="nav-link" data-page="eventsPage">🎉 Events</button>
-        <button class="nav-link" data-page="achievementsPage">🏅 Achievements</button>
-        <button class="nav-link" data-page="recordsPage">📈 Records</button>
-        <button class="nav-link" data-page="historyPage">📜 History</button>
-        <button class="nav-link" data-page="adminPage">🔐 Admin</button>
-      </nav>
+            <button data-page="matches">
+                Match Center
+            </button>
 
-      <div class="sidebar-footer">
-        <button id="logoutBtn" class="danger-btn full-btn">Logout</button>
-      </div>
+            <button data-page="tournaments">
+                Tournament Center
+            </button>
+
+            <button data-page="cups">
+                Cup Center
+            </button>
+
+            <button data-page="achievements">
+                Achievements
+            </button>
+
+            <button data-page="halloffame">
+                Hall of Fame
+            </button>
+
+            <button data-page="history">
+                History
+            </button>
+
+            <button data-page="admin">
+                Admin Tools
+            </button>
+
+        </nav>
+
     </aside>
 
-    <!-- CONTENT -->
-    <div class="content-area">
-      <!-- TOP BAR -->
-      <header class="topbar glass-panel">
-        <button id="mobileMenuBtn" class="icon-btn" aria-label="Open Menu">☰</button>
+    <!-- Main Content -->
+    <main>
 
-        <div>
-          <h1 id="pageTitle">Dashboard</h1>
-          <p id="pageSubtitle">Live stats, rankings, champions and records</p>
-        </div>
+        <!-- Dashboard -->
+        <section id="dashboard" class="page active">
 
-        <div class="topbar-actions">
-          <span id="autoSaveStatus" class="autosave-status">Auto Saved</span>
-          <button id="quickBackupBtn" class="secondary-btn">Backup</button>
-        </div>
-      </header>
+            <h1>Dashboard</h1>
 
-      <!-- DASHBOARD -->
-      <section id="dashboardPage" class="page active-page">
-        <div class="stats-grid">
-          <article class="stat-card glass-card">
-            <span>Total Players</span>
-            <strong id="totalPlayersStat">0</strong>
-          </article>
+            <div class="stats-grid">
 
-          <article class="stat-card glass-card">
-            <span>Total Matches</span>
-            <strong id="totalMatchesStat">0</strong>
-          </article>
+                <div class="card">
+                    <h3>Total Players</h3>
+                    <span id="totalPlayers">0</span>
+                </div>
 
-          <article class="stat-card glass-card">
-            <span>Total Tournaments</span>
-            <strong id="totalTournamentsStat">0</strong>
-          </article>
+                <div class="card">
+                    <h3>Total Matches</h3>
+                    <span id="totalMatches">0</span>
+                </div>
 
-          <article class="stat-card glass-card">
-            <span>Total Cups</span>
-            <strong id="totalCupsStat">0</strong>
-          </article>
-        </div>
+                <div class="card">
+                    <h3>Total Tournaments</h3>
+                    <span id="totalTournaments">0</span>
+                </div>
 
-        <div class="dashboard-grid">
-          <section class="glass-card feature-card champion-card">
-            <h2>👑 Current #1 Ranked Player</h2>
-            <div id="topRankedPlayerCard" class="hero-player-card empty-state">
-              No ranked player yet
-            </div>
-          </section>
+                <div class="card">
+                    <h3>Total Cups</h3>
+                    <span id="totalCups">0</span>
+                </div>
 
-          <section class="glass-card">
-            <h2>🏛 Special Title Holders</h2>
-            <div id="titleHoldersList" class="title-holder-list"></div>
-          </section>
-
-          <section class="glass-card">
-            <h2>⭐ MVP Leaderboard</h2>
-            <div id="mvpLeaderboard" class="leaderboard-list"></div>
-          </section>
-
-          <section class="glass-card">
-            <h2>📈 Win Rate Leaderboard</h2>
-            <div id="winRateLeaderboard" class="leaderboard-list"></div>
-          </section>
-
-          <section class="glass-card">
-            <h2>🏆 Trophy Leaderboard</h2>
-            <div id="trophyLeaderboard" class="leaderboard-list"></div>
-          </section>
-
-          <section class="glass-card">
-            <h2>🕘 Recent Champions</h2>
-            <div id="recentChampionsList" class="history-preview"></div>
-          </section>
-        </div>
-
-        <div class="charts-grid">
-          <section class="glass-card chart-card">
-            <h2>Points Graph</h2>
-            <canvas id="pointsChart" height="220"></canvas>
-          </section>
-
-          <section class="glass-card chart-card">
-            <h2>Wins Graph</h2>
-            <canvas id="winsChart" height="220"></canvas>
-          </section>
-
-          <section class="glass-card chart-card">
-            <h2>MVP Graph</h2>
-            <canvas id="mvpChart" height="220"></canvas>
-          </section>
-
-          <section class="glass-card chart-card">
-            <h2>Rank History</h2>
-            <canvas id="rankHistoryChart" height="220"></canvas>
-          </section>
-        </div>
-      </section>
-
-      <!-- PLAYERS -->
-      <section id="playersPage" class="page">
-        <div class="section-header">
-          <div>
-            <h2>👥 Player Management</h2>
-            <p>Add, edit, delete and view permanent player profiles.</p>
-          </div>
-
-          <button id="openPlayerModalBtn" class="primary-btn">Add Player</button>
-        </div>
-
-        <div id="playersGrid" class="players-grid"></div>
-
-        <section id="playerProfilePanel" class="glass-card profile-panel hidden">
-          <div class="profile-header">
-            <div>
-              <h2 id="profilePlayerName">Player Name</h2>
-              <p id="profilePlayerUsername">@username</p>
             </div>
 
-            <button id="closeProfileBtn" class="icon-btn">✕</button>
-          </div>
+            <div class="dashboard-widgets">
 
-          <div id="profileStatsGrid" class="profile-stats-grid"></div>
+                <div class="card">
+                    <h2>Current #1 Ranked Player</h2>
+                    <div id="topPlayer"></div>
+                </div>
 
-          <div class="profile-details-grid">
-            <section>
-              <h3>🏅 Achievements</h3>
-              <div id="profileAchievements" class="badge-list"></div>
-            </section>
+                <div class="card">
+                    <h2>Recent Activity</h2>
+                    <div id="recentActivity"></div>
+                </div>
 
-            <section>
-              <h3>📜 Career History</h3>
-              <div id="profileCareerHistory" class="timeline-list"></div>
-            </section>
-          </div>
+            </div>
+
         </section>
-      </section>
 
-      <!-- QUICK MATCH -->
-      <section id="quickMatchPage" class="page">
-        <div class="section-header">
-          <div>
-            <h2>🎮 Quick Match</h2>
-            <p>Record a normal match. First place gets win and MVP.</p>
-          </div>
-        </div>
+        <!-- Players -->
+        <section id="players" class="page">
 
-        <form id="quickMatchForm" class="glass-card form-grid">
-          <label>
-            Match Name
-            <input type="text" id="quickMatchName" placeholder="Example: Friendly Match" />
-          </label>
+            <h1>Players</h1>
 
-          <label>
-            Maps Count
-            <input type="number" id="quickMatchMaps" min="3" max="10" value="3" />
-          </label>
+            <div class="player-grid" id="playerGrid"></div>
 
-          <div class="full-row">
-            <h3>Select Players</h3>
-            <div id="quickMatchPlayerSelect" class="checkbox-grid"></div>
-          </div>
-
-          <div class="full-row">
-            <h3>Map Results</h3>
-            <div id="quickMatchResultInputs" class="results-entry"></div>
-          </div>
-
-          <button type="submit" class="primary-btn full-row">
-            Save Quick Match
-          </button>
-        </form>
-      </section>
-
-      <!-- TOURNAMENTS -->
-      <section id="tournamentsPage" class="page">
-        <div class="section-header">
-          <div>
-            <h2>🏆 Tournament Section</h2>
-            <p>2–5 players, 3–10 matches, 3–10 maps per match.</p>
-          </div>
-        </div>
-
-        <form id="createTournamentForm" class="glass-card form-grid">
-          <label>
-            Tournament Name
-            <input type="text" id="tournamentNameInput" placeholder="Example: Weekend Series" required />
-          </label>
-
-          <label>
-            Series Length
-            <input type="number" id="seriesLengthInput" min="3" max="10" value="5" required />
-          </label>
-
-          <label>
-            Maps Per Match
-            <input type="number" id="mapsPerMatchInput" min="3" max="10" value="3" required />
-          </label>
-
-          <div class="full-row">
-            <h3>Participants</h3>
-            <div id="tournamentPlayerSelect" class="checkbox-grid"></div>
-          </div>
-
-          <button type="submit" class="primary-btn full-row">
-            Create Tournament
-          </button>
-        </form>
-
-        <section class="glass-card active-tournament-card">
-          <div class="section-header compact">
-            <div>
-              <h2>Live Tournament</h2>
-              <p id="activeTournamentInfo">No active tournament</p>
-            </div>
-
-            <button id="endTournamentBtn" class="success-btn hidden">
-              End Tournament
-            </button>
-          </div>
-
-          <div id="activeTournamentStandings" class="standings-table"></div>
-
-          <form id="tournamentMatchForm" class="form-stack hidden">
-            <h3>Enter Match Result</h3>
-            <div id="tournamentMatchInputs" class="results-entry"></div>
-
-            <button type="submit" class="primary-btn">
-              Save Tournament Match
-            </button>
-          </form>
         </section>
-      </section>
 
-      <!-- CUPS -->
-      <section id="cupsPage" class="page">
-        <div class="section-header">
-          <div>
-            <h2>🥇 Cup Section</h2>
-            <p>League Cup and Elimination Cup with automatic champion records.</p>
-          </div>
-        </div>
+        <!-- Player Profile Modal -->
+        <div id="playerModal" class="modal">
 
-        <div class="two-column-grid">
-          <section class="glass-card">
-            <h2>🥇 League Cup</h2>
+            <div class="modal-content">
 
-            <form id="leagueCupForm" class="form-stack">
-              <label>
-                Cup Name
-                <input type="text" id="leagueCupName" placeholder="Example: League Cup #1" required />
-              </label>
+                <button id="closePlayerModal">
+                    ✖
+                </button>
 
-              <label>
-                Maps Count
-                <input type="number" id="leagueCupMaps" min="3" max="10" value="3" required />
-              </label>
+                <div id="playerProfile"></div>
 
-              <div>
-                <h3>Select Players</h3>
-                <div id="leagueCupPlayerSelect" class="checkbox-grid"></div>
-              </div>
-
-              <div>
-                <h3>Results</h3>
-                <div id="leagueCupResultInputs" class="results-entry"></div>
-              </div>
-
-              <button type="submit" class="primary-btn">
-                Save League Cup
-              </button>
-            </form>
-          </section>
-
-          <section class="glass-card">
-            <h2>⚔️ Elimination Cup</h2>
-
-            <form id="eliminationCupForm" class="form-stack">
-              <label>
-                Cup Name
-                <input type="text" id="eliminationCupName" placeholder="Example: Elimination Cup #1" required />
-              </label>
-
-              <label>
-                Maps Per Match
-                <input type="number" id="eliminationCupMaps" min="3" max="10" value="3" required />
-              </label>
-
-              <div>
-                <h3>Qualifier Players</h3>
-                <div id="eliminationCupPlayerSelect" class="checkbox-grid"></div>
-              </div>
-
-              <div>
-                <h3>Qualifier Result</h3>
-                <div id="eliminationQualifierInputs" class="results-entry"></div>
-              </div>
-
-              <div>
-                <h3>Final Result</h3>
-                <div id="eliminationFinalInputs" class="results-entry"></div>
-              </div>
-
-              <button type="submit" class="primary-btn">
-                Save Elimination Cup
-              </button>
-            </form>
-          </section>
-        </div>
-      </section>
-
-      <!-- EVENTS -->
-      <section id="eventsPage" class="page">
-        <div class="section-header">
-          <div>
-            <h2>🎉 Event Tournaments</h2>
-            <p>Special events stored separately from normal tournament history.</p>
-          </div>
-        </div>
-
-        <form id="createEventForm" class="glass-card form-grid">
-          <label>
-            Event Name
-            <input type="text" id="eventNameInput" placeholder="Example: Lava Land Event" required />
-          </label>
-
-          <label>
-            Series Length
-            <input type="number" id="eventSeriesLength" min="3" max="10" value="5" required />
-          </label>
-
-          <label>
-            Maps Per Match
-            <input type="number" id="eventMapsPerMatch" min="3" max="10" value="3" required />
-          </label>
-
-          <div class="full-row">
-            <h3>Participants</h3>
-            <div id="eventPlayerSelect" class="checkbox-grid"></div>
-          </div>
-
-          <button type="submit" class="primary-btn full-row">
-            Create Event Tournament
-          </button>
-        </form>
-
-        <section class="glass-card active-tournament-card">
-          <div class="section-header compact">
-            <div>
-              <h2>Live Event</h2>
-              <p id="activeEventInfo">No active event</p>
             </div>
 
-            <button id="endEventBtn" class="success-btn hidden">
-              End Event
-            </button>
-          </div>
+        </div>
 
-          <div id="activeEventStandings" class="standings-table"></div>
+        <!-- Leaderboard -->
+        <section id="leaderboard" class="page">
 
-          <form id="eventMatchForm" class="form-stack hidden">
-            <h3>Enter Event Match Result</h3>
-            <div id="eventMatchInputs" class="results-entry"></div>
+            <h1>Leaderboard</h1>
 
-            <button type="submit" class="primary-btn">
-              Save Event Match
-            </button>
-          </form>
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Rank</th>
+                        <th>Player</th>
+                        <th>Win Rate</th>
+                        <th>MVP</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="leaderboardTable"></tbody>
+
+            </table>
+
         </section>
-      </section>
 
-      <!-- ACHIEVEMENTS -->
-      <section id="achievementsPage" class="page">
-        <div class="section-header">
-          <div>
-            <h2>🏅 Achievement Page</h2>
-            <p>Permanent achievements and dynamic special titles.</p>
-          </div>
-        </div>
+        <!-- Match Center -->
+        <section id="matches" class="page">
 
-        <div class="two-column-grid">
-          <section class="glass-card">
-            <h2>👑 Dynamic Special Titles</h2>
-            <div id="dynamicTitlesPanel" class="achievement-list"></div>
-          </section>
+            <h1>Record Match</h1>
 
-          <section class="glass-card">
-            <h2>🏅 Permanent Achievements</h2>
-            <div id="permanentAchievementsPanel" class="achievement-list"></div>
-          </section>
-        </div>
-      </section>
+            <div class="card">
 
-      <!-- RECORDS -->
-      <section id="recordsPage" class="page">
-        <div class="section-header">
-          <div>
-            <h2>📈 Records Page</h2>
-            <p>All-time records across tournaments, cups, MVPs and stats.</p>
-          </div>
-        </div>
+                <h3>Match Results</h3>
 
-        <div id="recordsGrid" class="records-grid"></div>
-      </section>
+                <select id="firstPlace"></select>
+                <select id="secondPlace"></select>
+                <select id="thirdPlace"></select>
+                <select id="fourthPlace"></select>
+                <select id="fifthPlace"></select>
 
-      <!-- HISTORY -->
-      <section id="historyPage" class="page">
-        <div class="section-header">
-          <div>
-            <h2>📜 History System</h2>
-            <p>Permanent records of matches, tournaments, cups, events and careers.</p>
-          </div>
-        </div>
+                <button id="saveMatchBtn">
+                    Save Match
+                </button>
 
-        <div class="history-tabs">
-          <button class="history-tab active" data-history="matchHistoryPanel">Matches</button>
-          <button class="history-tab" data-history="tournamentHistoryPanel">Tournaments</button>
-          <button class="history-tab" data-history="cupHistoryPanel">Cups</button>
-          <button class="history-tab" data-history="eventHistoryPanel">Events</button>
-        </div>
-
-        <section id="matchHistoryPanel" class="history-panel active-history glass-card"></section>
-        <section id="tournamentHistoryPanel" class="history-panel glass-card"></section>
-        <section id="cupHistoryPanel" class="history-panel glass-card"></section>
-        <section id="eventHistoryPanel" class="history-panel glass-card"></section>
-      </section>
-
-      <!-- ADMIN -->
-      <section id="adminPage" class="page">
-        <div class="section-header">
-          <div>
-            <h2>🔐 Admin Panel</h2>
-            <p>Backup, restore, reset data, edit password and manage saved records.</p>
-          </div>
-        </div>
-
-        <div class="admin-grid">
-          <section class="glass-card">
-            <h2>💾 Backup & Restore</h2>
-
-            <div class="button-stack">
-              <button id="exportJsonBtn" class="primary-btn">Export Backup JSON</button>
-              <button id="exportExcelBtn" class="secondary-btn">Export Excel</button>
-              <button id="exportPdfBtn" class="secondary-btn">Export PDF</button>
             </div>
 
-            <label class="file-upload">
-              Restore Backup
-              <input type="file" id="restoreBackupInput" accept=".json" />
-            </label>
-          </section>
+        </section>
 
-          <section class="glass-card">
-            <h2>🔑 Change Admin Password</h2>
+        <!-- Tournament Center -->
+        <section id="tournaments" class="page">
 
-            <form id="changePasswordForm" class="form-stack">
-              <label>
-                Current Password
-                <input type="password" id="currentPasswordInput" required />
-              </label>
+            <h1>Tournaments</h1>
 
-              <label>
-                New Password
-                <input type="password" id="newPasswordInput" required />
-              </label>
+            <div class="card">
 
-              <button type="submit" class="primary-btn">
-                Change Password
-              </button>
-            </form>
-          </section>
+                <input
+                    type="text"
+                    id="tournamentName"
+                    placeholder="Tournament Name"
+                >
 
-          <section class="glass-card danger-zone">
-            <h2>⚠️ Danger Zone</h2>
-            <p>Resetting data will remove saved stats, history and achievements.</p>
+                <select id="seriesLength">
 
-            <div class="button-stack">
-              <button id="undoLastResultBtn" class="warning-btn">Undo Last Match Result</button>
-              <button id="resetDataBtn" class="danger-btn">Reset All Data</button>
+                    <option value="3">Best Of 3</option>
+                    <option value="5">Best Of 5</option>
+                    <option value="7">Best Of 7</option>
+
+                </select>
+
+                <button id="createTournament">
+                    Create Tournament
+                </button>
+
             </div>
-          </section>
-        </div>
-      </section>
-    </div>
-  </div>
 
-  <!-- PLAYER MODAL -->
-  <dialog id="playerModal" class="app-modal glass-card">
-    <form id="playerForm" class="form-stack">
-      <div class="modal-header">
-        <h2 id="playerModalTitle">Add Player</h2>
-        <button type="button" id="closePlayerModalBtn" class="icon-btn">✕</button>
-      </div>
+            <div id="tournamentList"></div>
 
-      <input type="hidden" id="playerIdInput" />
+        </section>
 
-      <label>
-        Name
-        <input type="text" id="playerNameInput" required />
-      </label>
+        <!-- Cup Center -->
+        <section id="cups" class="page">
 
-      <label>
-        Username
-        <input type="text" id="playerUsernameInput" required />
-      </label>
+            <h1>Cups</h1>
 
-      <label>
-        Nickname
-        <input type="text" id="playerNicknameInput" />
-      </label>
+            <button id="createLeagueCup">
+                New League Cup
+            </button>
 
-      <label>
-        Profile Picture URL
-        <input type="url" id="playerImageInput" placeholder="Optional image URL" />
-      </label>
+            <button id="createEliminationCup">
+                New Elimination Cup
+            </button>
 
-      <button type="submit" class="primary-btn">
-        Save Player
-      </button>
-    </form>
-  </dialog>
+            <div id="cupList"></div>
 
-  <!-- CONFIRM MODAL -->
-  <dialog id="confirmModal" class="app-modal glass-card">
-    <div class="form-stack">
-      <h2 id="confirmTitle">Confirm Action</h2>
-      <p id="confirmMessage">Are you sure?</p>
+        </section>
 
-      <div class="modal-actions">
-        <button id="cancelConfirmBtn" class="secondary-btn">Cancel</button>
-        <button id="acceptConfirmBtn" class="danger-btn">Confirm</button>
-      </div>
-    </div>
-  </dialog>
+        <!-- Achievements -->
+        <section id="achievements" class="page">
+
+            <h1>Achievements</h1>
+
+            <div id="achievementList"></div>
+
+        </section>
+
+        <!-- Hall Of Fame -->
+        <section id="halloffame" class="page">
+
+            <h1>Hall Of Fame</h1>
+
+            <div class="titles">
+
+                <div class="card">
+
+                    <h2>🏛 Hall Of Fame</h2>
+
+                    <div id="hallOfFameHolder"></div>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>🌟 Legendary Player</h2>
+
+                    <div id="legendaryHolder"></div>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>⚡ Mythic Master</h2>
+
+                    <div id="mythicHolder"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- History -->
+        <section id="history" class="page">
+
+            <h1>History</h1>
+
+            <div id="historyList"></div>
+
+        </section>
+
+        <!-- Admin -->
+        <section id="admin" class="page">
+
+            <h1>Admin Tools</h1>
+
+            <button id="backupBtn">
+                Export Backup
+            </button>
+
+            <input
+                type="file"
+                id="restoreFile"
+            >
+
+            <button id="resetData">
+                Reset All Data
+            </button>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+
 </body>
 </html>
